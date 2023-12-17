@@ -156,22 +156,24 @@ const HomePage = () => {
       </label>
       <button type="submit">Submit</button>
     </form>
-    {userCal ? (
-        <div>
-          <p>User ID: {userCal.userid}</p>
-          <ul>
-            {userCal.entries.map((entry, index) => (
-              <li key={index}>
-                <p>Date: {entry.date}</p>
-                <p>Food: {entry.food}</p>
-                <p>Calories: {entry.totalCalories}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>{error || 'No entries on this date'}</p>
-      )}
+    {userCal? (
+  userCal.map((user, userIndex) => (
+    <div key={userIndex}>
+      <p>User ID: {user.userid}</p>
+      <ul>
+        {user.entries.map((entry, entryIndex) => (
+          <li key={entryIndex}>
+            <p>Date: {entry.date}</p>
+            <p>Food: {entry.food}</p>
+            <p>Calories: {entry.totalCalories}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))
+) : (
+  <p>{error || 'No entries on this date'}</p>
+)}
     </div>
   );
 };

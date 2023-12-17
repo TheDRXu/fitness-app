@@ -124,20 +124,20 @@ app.get('/users/total-calories/:userId/:dateCal', async (req, res) => {
 	try {
 	  const userId = req.params.userId;
 	  const dateCal = req.params.dateCal;
-	  const date = new Date(req.params.dateCal);
-	  console.log(userId,date)
-	  const user = await CalorieEntry.findOne({
+	  const user = await CalorieEntry.find({
 		user: userId,
-		'entries.date': { $eq: date }
+		'entries.date': { $eq: new Date(dateCal) }
 	  });
-  
+	  console.log(user)
 	  if (!user) {
 		return res.status(404).json({ message: 'User not found' });
 	  }
-
-	  const matchingEntries = user.entries.filter(item=>item.food == 'bread')
-  	  console.log(matchingEntries); // An array of matching entries
-	  res.json({ userid: user.user, entries: user.entries });
+	  const responseData = user.map(user => ({
+		userid: user.user,
+		entries: user.entries,
+	  }));
+	  
+	  res.json(responseData);
 	} catch (error) {
 	  console.error('Error finding user:', error);
 	  res.status(500).json({ message: 'Internal Server Error' });
@@ -211,15 +211,9 @@ app.post("/login", async (req, res) => {
 	try {
 	  const { emailLog, passLog } = req.body;
   
-	  // Find the user by email
 	  const user = await User.findOne({ email: emailLog });
-  
-	  // Check if the user exists and verify the password
 	  if (user && (await bcrypt.compare(passLog, user.pass))) {
-		// Generate a token with the user ID
-		const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' }); // Token expires in 1 hour
-  
-		// Send the token and user data in the response
+		const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
 		res.json({ token, user: { _id: user._id, name: user.name, email: user.email } });
 	  } else {
 		res.status(401).json({ message: 'Invalid credentials' });
@@ -237,29 +231,20 @@ app.post('/calorie-entry', async (req, res) => {
 	try {
 	  const { user, entries } = req.body;
   
-	  let existingCalorieEntry = await CalorieEntry.findOne({ user });
+	const calorieEntry = new CalorieEntry({
+		user,
+		entries,
+	});
   
-	  if (existingCalorieEntry) {
-		existingCalorieEntry.entries.push(...entries);
-		const result = await existingCalorieEntry.save();
+	const result = await calorieEntry.save();
+  
+	if (result) {
 		res.json(result);
 		console.log(result);
-	  } else {
-		const calorieEntry = new CalorieEntry({
-		  user,
-		  entries,
-		});
-  
-		const result = await calorieEntry.save();
-  
-		if (result) {
-		  res.json(result);
-		  console.log(result);
-		} else {
+	} else {
 		  console.log('Failed to save calorie entry');
 		  res.status(500).json({ error: 'Failed to save calorie entry' });
-		}
-	  }
+	}
 	} catch (e) {
 	  console.error(e);
 	  res.status(500).json({ message: 'Something Went Wrong' });
