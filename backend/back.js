@@ -64,6 +64,10 @@ const calorieEntrySchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      time:{
+        type:String,
+        required: true,
+      },
       food: {
         type: String,
         required: true,
@@ -106,6 +110,7 @@ app.get("/users/find-user/:userId", async (req, res) => {
       email: user.email,
       height: user.height,
       weight: user.weight,
+      age: user.age,
     });
   } catch (error) {
     console.error("Error finding user:", error);

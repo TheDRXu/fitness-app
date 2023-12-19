@@ -12,6 +12,7 @@ const HomePage = () => {
   const [dateCal, setDateCal] = useState("");
   const [showCal, setShowCal] = useState("");
   const [calDay, setCalDay] = useState("");
+  const [timeEat, setTimeEat] = useState("");
 
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
@@ -51,7 +52,8 @@ const HomePage = () => {
       entries: [
         {
           date: date,
-          food,
+          time: timeEat,
+          food: food,
           totalCalories: parseInt(totalCalories, 10),
         },
       ],
@@ -156,6 +158,15 @@ const HomePage = () => {
         </label>
         <br />
         <label>
+          Time:
+          <input
+            type="text"
+            value={timeEat}
+            onChange={(e) => setTimeEat(e.target.value)}
+          />
+        </label>
+        <br />
+        <label>
           Total Calories:
           <input
             type="number"
@@ -186,6 +197,7 @@ const HomePage = () => {
               {user.entries.map((entry, entryIndex) => (
                 <li key={entryIndex}>
                   <p>Date: {entry.date}</p>
+                  <p>Time: {entry.time}</p>
                   <p>Food: {entry.food}</p>
                   <p>Calories: {entry.totalCalories}</p>
                 </li>
