@@ -38,6 +38,9 @@ const UserSchema = new mongoose.Schema({
   weight: {
     type: Number,
   },
+  age: {
+    type: Number,
+  },
   email: {
     type: String,
     required: true,
@@ -159,9 +162,9 @@ app.get("/users/total-calories/:userId/:dateCal", async (req, res) => {
 // 	}
 //   });
 
-app.post("/register", async (req, resp) => {
+app.post("/register", async (req, resp) => { //register user
   try {
-    const { name, height, weight, email, pass } = req.body;
+    const { name, height, weight, age,  email, pass } = req.body;
 
     if (!pass) {
       return resp.status(400).send("Password is required");
@@ -173,6 +176,7 @@ app.post("/register", async (req, resp) => {
       height,
       weight,
       email,
+      age,
       pass: hashedPassword,
     });
 

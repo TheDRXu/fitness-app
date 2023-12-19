@@ -8,6 +8,7 @@ function LoginPage() {
   const [pass, setPass] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const [age, setAge] = useState('');
   const [emailLog, setEmailLog] = useState('');
   const [passLog, setPassLog] = useState('');
 
@@ -16,7 +17,7 @@ function LoginPage() {
     try {
       const result = await fetch('http://localhost:5000/register', {
         method: 'post',
-        body: JSON.stringify({ name, height, weight, email, pass }),
+        body: JSON.stringify({ name, height, weight, age, email, pass }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -129,6 +130,12 @@ function LoginPage() {
           placeholder="weight"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="age"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
         />
         <button type="submit" onClick={handleOnSubmit}>
           Submit
